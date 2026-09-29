@@ -126,7 +126,7 @@ function draw(){
   });
   h+='</section>';
  });
- $("menu").innerHTML=h;$("tabs").innerHTML=t;spy();
+ $("menu").innerHTML=h;if(!$("tabs").children.length)$("tabs").innerHTML=t;spy();
 }
 function lines(){var groups={},order=[],tot=0,c=0;
  Object.keys(Q).forEach(function(k){if(Q[k]>0){var s=k.split("-"),p=M[s[0]].i[s[1]],cat=M[s[0]].c;
@@ -136,7 +136,7 @@ function lines(){var groups={},order=[],tot=0,c=0;
  return{o:o,tot:tot,c:c}}
 function bar(){var L=lines();$("bar").style.display=L.c?"block":"none";
  $("cnt").textContent="Ver pedido ("+L.c+(L.c==1?" item)":" itens)");$("sum").textContent=R(L.tot)}
-function change(k,d){var y=window.scrollY;Q[k]=Math.max(0,(Q[k]||0)+d);draw();bar();window.scrollTo(0,y);if(!lines().c)$("sheet").classList.remove("open");else if($("sheet").classList.contains("open"))sheet()}
+function change(k,d){var y=window.scrollY;Q[k]=Math.max(0,(Q[k]||0)+d);draw();bar();window.scrollTo({top:y,left:0,behavior:"instant"});if(!lines().c)$("sheet").classList.remove("open");else if($("sheet").classList.contains("open"))sheet()}
 function sheet(){var L=lines();
  $("lines").innerHTML=L.o.length?L.o.map(function(g){
   return '<div style="color:var(--gold);font-weight:700;margin-top:12px">'+g.cat+'</div>'+
@@ -157,8 +157,10 @@ $("go").onclick=function(){var L=lines();if(!L.c)return;
  if($("ob").value.trim())m+="\nObs: "+$("ob").value.trim();
  m+="\n\nAguardo confirmação, obrigado(a)!";
  window.open("https://wa.me/"+PHONE+"?text="+encodeURIComponent(m),"_blank")};
+var io=null;
 function spy(){if(!("IntersectionObserver" in window))return;
- var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){document.querySelectorAll("#tabs a").forEach(function(a){var on=a.dataset.s===en.target.id;a.classList.toggle("on",on);if(on)a.scrollIntoView({block:"nearest",inline:"center"})})}})},{rootMargin:"-30% 0px -60% 0px"});
+ if(!io)io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){var t=$("tabs");document.querySelectorAll("#tabs a").forEach(function(a){var was=a.classList.contains("on"),on=a.dataset.s===en.target.id;a.classList.toggle("on",on);if(on&&!was)t.scrollLeft=a.offsetLeft-(t.clientWidth-a.offsetWidth)/2})}})},{rootMargin:"-30% 0px -60% 0px"});
+ io.disconnect();
  document.querySelectorAll("section").forEach(function(s){io.observe(s)})}
 draw();bar();
 </script>
