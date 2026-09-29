@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Império dos Espetos | Cardápio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#2b0a10;--bg2:#3b1019;--ink:#f8ecd9;--mute:#c9a99a;--gold:#f0b73e;--fire:#e2452b;--line:rgba(240,183,62,.28);
+--display:"Alfa Slab One",Georgia,"Times New Roman",serif;--body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-behavior:smooth;scroll-padding-top:calc(64px + env(safe-area-inset-top,0px))}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.5 var(--body)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+header.hero{padding:44px 0 36px;text-align:left;background:radial-gradient(120% 80% at 90% 0,#5a1622 0,transparent 60%),var(--bg);border-bottom:1px solid var(--line)}
+.crown{width:64px;height:auto;display:block;margin-bottom:14px;animation:rise .8s ease-out both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+h1{font:400 clamp(2.6rem,12vw,4.6rem)/.95 var(--display);margin:0;color:var(--gold);letter-spacing:.01em}
+h1 span{display:block;color:var(--ink);font-size:.62em;margin-top:.15em}
+.tag{max-width:34ch;margin:16px 0 22px;color:var(--mute);font-size:1.05rem}
+.info{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.92rem;color:var(--ink)}
+.info b{color:var(--gold);font-weight:700}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+nav .wrap{display:flex;gap:8px;overflow-x:auto;padding-top:12px;padding-bottom:12px;scrollbar-width:none}
+nav a{flex:none;padding:8px 16px;border:1px solid var(--line);border-radius:999px;color:var(--ink);text-decoration:none;font-weight:500;font-size:.95rem}
+nav a.on{background:var(--gold);color:#2b0a10;border-color:var(--gold);font-weight:700}
+section{padding:34px 0 6px}
+h2{font:400 1.7rem/1.1 var(--display);margin:0 0 4px;color:var(--gold)}
+.sub{margin:0 0 14px;color:var(--mute);font-size:.92rem}
+.item{display:grid;grid-template-columns:1fr auto;gap:2px 14px;align-items:center;padding:14px 0;border-top:1px dashed var(--line)}
+.item h3{margin:0;font-size:1.05rem;font-weight:700}
+.item p{margin:0;color:var(--mute);font-size:.9rem;grid-column:1}
+.price{font-weight:700;color:var(--gold);white-space:nowrap;text-align:right}
+.ctl{grid-column:2;grid-row:2;justify-self:end;display:flex;align-items:center;gap:4px}
+.add{background:var(--fire);border:0;border-radius:999px;padding:7px 16px;font-weight:700;color:#fff}
+.q{width:36px;height:36px;border-radius:50%;border:1px solid var(--gold);background:none;color:var(--gold);font-size:1.2rem;line-height:1}
+.n{min-width:24px;text-align:center;font-weight:700}
+.best{display:inline-block;margin-left:8px;padding:1px 8px;border-radius:6px;background:var(--gold);color:#2b0a10;font-size:.72rem;font-weight:700;vertical-align:middle}
+footer{margin-top:40px;padding:30px 0 120px;background:var(--bg2);border-top:1px solid var(--line);color:var(--mute);font-size:.92rem}
+footer strong{color:var(--gold);font-family:var(--display);font-weight:400;font-size:1.2rem}
+#bar{position:fixed;left:0;right:0;bottom:0;z-index:8;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 40%);display:none}
+#bar .row2{max-width:688px;margin:0 auto;display:flex;gap:10px}
+#bar button{background:var(--gold);color:#2b0a10;border:0;border-radius:14px;font-weight:700;font-size:1.02rem;box-shadow:0 6px 24px rgba(0,0,0,.45)}
+#open{flex:1;display:flex;justify-content:space-between;padding:15px 20px}
+#trash.q2{flex:none;width:52px;display:flex;align-items:center;justify-content:center;background:var(--bg2);border:1px solid var(--fire);color:var(--fire)}
+#sheet{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.6);display:none;align-items:flex-end}
+#sheet.open{display:flex}
+.panel{width:100%;max-width:720px;margin:0 auto;max-height:88%;overflow:auto;background:var(--bg2);border-radius:20px 20px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom,0px));border-top:2px solid var(--gold)}
+.panel h2{margin-bottom:10px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.tot{display:flex;justify-content:space-between;font-weight:700;font-size:1.15rem;padding:14px 0}
+label{display:block;font-size:.9rem;color:var(--mute);margin:8px 0 4px}
+input,textarea{width:100%;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit}
+.send{width:100%;margin-top:14px;padding:15px;border:0;border-radius:14px;background:#25d366;color:#062b13;font-weight:700;font-size:1.05rem}
+.ghost{width:100%;margin-top:8px;padding:12px;background:none;border:0;color:var(--mute);text-decoration:underline}
+.empty{color:var(--mute);padding:12px 0}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.crown{animation:none}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+<svg class="crown" viewBox="0 0 64 48" aria-hidden="true"><path d="M4 40 L8 12 L22 26 L32 6 L42 26 L56 12 L60 40 Z" fill="#f0b73e"/><rect x="4" y="42" width="56" height="5" rx="2" fill="#e2452b"/><circle cx="8" cy="10" r="3.5" fill="#f8ecd9"/><circle cx="32" cy="4" r="3.5" fill="#f8ecd9"/><circle cx="56" cy="10" r="3.5" fill="#f8ecd9"/></svg>
+<h1>Império<span>dos Espetos</span></h1>
+<p class="tag">Sabor que reúne. Monte seu pedido e mande pelo WhatsApp.</p>
+<div class="info"><span><b>Aberto:</b> ter a dom, 17h às 23h30</span><span><b>Entrega e retirada</b></span></div>
+</div></header>
+<nav aria-label="Categorias"><div class="wrap" id="tabs"></div></nav>
+<main class="wrap" id="menu"></main>
+<footer><div class="wrap"><strong>Império dos Espetos</strong><p>Pedidos pelo WhatsApp: (65) 98133-6068</p><p>Os valores podem mudar sem aviso. Taxa de entrega combinada no pedido.</p></div></footer>
+<div id="bar"><div class="row2"><button id="open" type="button"><span id="cnt"></span><span id="sum"></span></button><button id="trash" class="q2" type="button" aria-label="Esvaziar pedido" title="Esvaziar pedido"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button></div></div>
+<div id="sheet" role="dialog" aria-modal="true" aria-label="Seu pedido"><div class="panel">
+<h2>Seu pedido</h2><div id="lines"></div><div class="tot"><span>Total</span><span id="tot"></span></div>
+<label for="nm">Seu nome</label><input id="nm" autocomplete="name">
+<label for="md">Como vai receber?</label><input id="md" placeholder="Entrega (informe o endereço) ou retirada">
+<label for="ob">Observações</label><textarea id="ob" rows="2" placeholder="Ponto da carne, sem farofa, etc."></textarea>
+<button class="send" id="go" type="button">Enviar pedido pelo WhatsApp</button>
+<button class="ghost" id="close" type="button">Continuar escolhendo</button>
+</div></div>
+<script>
+var PHONE="5565981336068"; // WhatsApp da loja
+var M=[
+{c:"Espetos Completos",s:"Acompanha arroz, vinagrete, farofa de banana e mandioca",i:[
+ ["Espeto Completo (Carne, Linguiça, Kafta)","Carne • Linguiça • Kafta",20,1],
+ ["Espeto Completo (Frango, Tulipa, Pão de Alho)","Medalhão de Frango • Tulipa • Pão de Alho",22]
+]},
+{c:"Espetos Simples",s:"Só o espeto, na brasa",i:[
+ ["Carne","Espeto simples",10],
+ ["Linguiça","Espeto simples",10],
+ ["Kafta","Espeto simples",10],
+ ["Medalhão","Espeto simples",12],
+ ["Tulipa","Espeto simples",12],
+ ["Pão de Alho","Espeto simples",12]
+]},
+{c:"Bebidas",s:"Bem geladas",i:[
+ ["Água sem gás","",5],
+ ["Água com gás","",6],
+ ["Sukita lata","",6],
+ ["Coca lata","310 ml",6],
+ ["Fanta lata","310 ml",6],
+ ["Skol lata","269 ml",6],
+ ["Império Ultra lata","269 ml",6],
+ ["Heineken lata","",7],
+ ["Cerveja Original","265 ml",6],
+ ["Heineken","210 ml",9],
+ ["Guaraná Antarctica","1 litro",11],
+ ["Coca-Cola","1 litro",12],
+ ["Fanta","1 litro",12],
+ ["Suco Del Valle","1 litro",15],
+ ["Suco Del Valle lata","290 ml",10]
+]}];
+var Q={},$=function(i){return document.getElementById(i)};
+var R=function(v){return "R$ "+v.toFixed(2).replace(".",",")};
+function id(a,b){return a+"-"+b}
+function draw(){
+ var h="",t="";
+ M.forEach(function(g,a){
+  t+='<a href="#s'+a+'" data-s="s'+a+'">'+g.c+'</a>';
+  h+='<section id="s'+a+'"><h2>'+g.c+'</h2><p class="sub">'+g.s+'</p>';
+  g.i.forEach(function(p,b){var k=id(a,b),n=Q[k]||0;
+   h+='<div class="item"><h3>'+p[0]+(p[3]?'<span class="best">Mais pedido</span>':'')+'</h3><span class="price">'+R(p[2])+'</span><p>'+p[1]+'</p><div class="ctl">'+
+   (n?'<button class="q" data-k="'+k+'" data-d="-1" aria-label="Tirar '+p[0]+'">−</button><span class="n" aria-live="polite">'+n+'</span><button class="q" data-k="'+k+'" data-d="1" aria-label="Adicionar mais '+p[0]+'">+</button>':'<button class="add" data-k="'+k+'" data-d="1">Adicionar</button>')+'</div></div>';
+  });
+  h+='</section>';
+ });
+ $("menu").innerHTML=h;$("tabs").innerHTML=t;spy();
+}
+function lines(){var groups={},order=[],tot=0,c=0;
+ Object.keys(Q).forEach(function(k){if(Q[k]>0){var s=k.split("-"),p=M[s[0]].i[s[1]],cat=M[s[0]].c;
+  if(!groups[cat]){groups[cat]=[];order.push(cat)}
+  groups[cat].push({n:p[0],q:Q[k],v:p[2]*Q[k]});tot+=p[2]*Q[k];c+=Q[k]}});
+ var o=order.map(function(cat){return{cat:cat,items:groups[cat]}});
+ return{o:o,tot:tot,c:c}}
+function bar(){var L=lines();$("bar").style.display=L.c?"block":"none";
+ $("cnt").textContent="Ver pedido ("+L.c+(L.c==1?" item)":" itens)");$("sum").textContent=R(L.tot)}
+function change(k,d){var y=window.scrollY;Q[k]=Math.max(0,(Q[k]||0)+d);draw();bar();window.scrollTo(0,y);if(!lines().c)$("sheet").classList.remove("open");else if($("sheet").classList.contains("open"))sheet()}
+function sheet(){var L=lines();
+ $("lines").innerHTML=L.o.length?L.o.map(function(g){
+  return '<div style="color:var(--gold);font-weight:700;margin-top:12px">'+g.cat+'</div>'+
+   g.items.map(function(x){return '<div class="row"><span>'+x.q+'× '+x.n+'</span><span>'+R(x.v)+'</span></div>'}).join("");
+ }).join(""):'<p class="empty">Nenhum item ainda. Toque em Adicionar no cardápio.</p>';
+ $("tot").textContent=R(L.tot);$("sheet").classList.add("open")}
+document.addEventListener("click",function(e){var b=e.target.closest("[data-k]");if(b)change(b.dataset.k,+b.dataset.d)});
+$("open").onclick=sheet;$("close").onclick=function(){$("sheet").classList.remove("open")};
+$("trash").onclick=function(){if(!lines().c)return;Q={};draw();bar();$("sheet").classList.remove("open")};
+$("sheet").onclick=function(e){if(e.target===this)this.classList.remove("open")};
+document.addEventListener("keydown",function(e){if(e.key==="Escape")$("sheet").classList.remove("open")});
+$("go").onclick=function(){var L=lines();if(!L.c)return;
+ var m="Olá, Império dos Espetos!\nGostaria de fazer o seguinte pedido:\n\n"+
+  L.o.map(function(g){return g.cat+":\n"+g.items.map(function(x){return "* "+x.q+"x "+x.n+" ... "+R(x.v)}).join("\n")}).join("\n\n")+
+  "\n\n*Total: "+R(L.tot)+"*";
+ m+="\n\nNome: "+($("nm").value.trim()||"-");
+ m+="\nEntrega/retirada: "+($("md").value.trim()||"-");
+ if($("ob").value.trim())m+="\nObs: "+$("ob").value.trim();
+ m+="\n\nAguardo confirmação, obrigado(a)!";
+ window.open("https://wa.me/"+PHONE+"?text="+encodeURIComponent(m),"_blank")};
+function spy(){if(!("IntersectionObserver" in window))return;
+ var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){document.querySelectorAll("#tabs a").forEach(function(a){var on=a.dataset.s===en.target.id;a.classList.toggle("on",on);if(on)a.scrollIntoView({block:"nearest",inline:"center"})})}})},{rootMargin:"-30% 0px -60% 0px"});
+ document.querySelectorAll("section").forEach(function(s){io.observe(s)})}
+draw();bar();
+</script>
+</body>
+</html>
