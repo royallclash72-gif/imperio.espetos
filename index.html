@@ -15,15 +15,28 @@ html{scroll-behavior:smooth;scroll-padding-top:calc(64px + env(safe-area-inset-t
 body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.5 var(--body);overflow-x:hidden}
 button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+radial-gradient(70% 45% at 100% 0,rgba(140,30,45,.55),transparent 70%),
+radial-gradient(60% 40% at 0 100%,rgba(226,69,43,.22),transparent 70%),
+radial-gradient(60% 40% at 100% 60%,rgba(240,183,62,.07),transparent 70%),
+radial-gradient(rgba(240,183,62,.09) 1px,transparent 1.6px) 0 0/22px 22px,
+linear-gradient(180deg,#34101a,#2b0a10 45%,#220810)}
 .wrap{max-width:720px;margin:0 auto;padding:0 20px}
-header.hero{padding:calc(44px + env(safe-area-inset-top,0px)) 0 36px;background:radial-gradient(120% 80% at 90% 0,#5a1622 0,transparent 60%),var(--bg);border-bottom:1px solid var(--line)}
-.crown{width:64px;height:auto;display:block;margin-bottom:14px}
+header.hero{padding:calc(44px + env(safe-area-inset-top,0px)) 0 36px;background:radial-gradient(120% 80% at 90% 0,rgba(90,22,34,.85) 0,transparent 60%);border-bottom:1px solid var(--line)}
+.crown{width:64px;height:auto;display:block;margin-bottom:14px;animation:crown-in .8s ease-out both,crown-float 3.2s ease-in-out .8s infinite;will-change:transform}
+.crown circle{transform-box:fill-box;transform-origin:center;animation:jewel 2.4s ease-in-out infinite}
+.crown circle:nth-of-type(2){animation-delay:.4s}
+.crown circle:nth-of-type(3){animation-delay:.8s}
+@keyframes crown-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes crown-float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(-2deg)}}
+@keyframes jewel{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.7}}
 h1{font:400 clamp(2.6rem,12vw,4.6rem)/.95 var(--display);margin:0;color:var(--gold);letter-spacing:.01em}
 h1 span{display:block;color:var(--ink);font-size:.62em;margin-top:.15em}
-.tag{max-width:34ch;margin:16px 0 22px;color:var(--mute);font-size:1.05rem}
+.slogan{display:inline-block;margin:18px 0 0;padding-bottom:6px;border-bottom:3px solid var(--fire);font:400 clamp(1.5rem,7vw,2.1rem)/1.1 var(--display);color:var(--ink)}
+.tag{max-width:34ch;margin:12px 0 22px;color:var(--mute);font-size:1.05rem}
 .info{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.95rem}
 .info b{color:var(--gold)}
-nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+nav{position:sticky;top:0;z-index:5;background:rgba(43,10,16,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
 nav .wrap{display:flex;gap:8px;overflow-x:auto;padding-top:10px;padding-bottom:10px;scrollbar-width:none}
 nav .wrap::-webkit-scrollbar{display:none}
 nav a{flex:1 0 auto;text-align:center;padding:11px 18px;border:1px solid var(--line);border-radius:999px;color:var(--ink);text-decoration:none;font-weight:500}
@@ -76,25 +89,26 @@ input[type=text],input[type=tel],textarea{width:100%;background:var(--bg);color:
 .next{width:100%;margin-top:6px;padding:15px;border:0;border-radius:14px;background:var(--gold);color:#2b0a10;font-weight:700;font-size:1.05rem}
 .ghost{width:100%;margin-top:8px;padding:12px;background:none;border:0;color:var(--mute);text-decoration:underline}
 @media (min-width:760px){#sheet{align-items:center}.panel{border-radius:20px;border:2px solid var(--gold);max-height:90%}}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.crown,.crown circle{animation:none}}
 </style>
 </head>
 <body>
 <header class="hero"><div class="wrap">
 <svg class="crown" viewBox="0 0 64 48" aria-hidden="true"><path d="M4 40 L8 12 L22 26 L32 6 L42 26 L56 12 L60 40 Z" fill="#f0b73e"/><rect x="4" y="42" width="56" height="5" rx="2" fill="#e2452b"/><circle cx="8" cy="10" r="3.5" fill="#f8ecd9"/><circle cx="32" cy="4" r="3.5" fill="#f8ecd9"/><circle cx="56" cy="10" r="3.5" fill="#f8ecd9"/></svg>
 <h1>Império<span>dos Espetos</span></h1>
-<p class="tag">Sabor que reúne. Monte seu pedido e mande pelo WhatsApp.</p>
-<div class="info"><span><b>Aberto:</b> de terça a domingo, das 17h às 23h30</span><span><b>Entrega e retirada</b></span></div>
+<p class="slogan">Sabor que reúne.</p>
+<p class="tag">Monte seu pedido e mande pelo WhatsApp.</p>
+<div class="info"><span><b>Aberto:</b> de terça a domingo, das 17h às 23h30</span><span id="info-e"><b>Entrega e retirada</b></span></div>
 </div></header>
 <nav aria-label="Categorias"><div class="wrap" id="tabs"></div></nav>
 <main class="wrap" id="menu"></main>
-<footer><div class="wrap"><strong>Império dos Espetos</strong><p>Pedidos pelo WhatsApp: (65) 98133-6068</p><p>Os valores podem mudar sem aviso. Taxa de entrega combinada no pedido.</p></div></footer>
+<footer><div class="wrap"><strong>Império dos Espetos</strong><p>Pedidos pelo WhatsApp: (65) 98133-6068</p><p>Os valores podem mudar sem aviso.<span id="taxa"> Taxa de entrega combinada no pedido.</span></p></div></footer>
 <div id="bar"><div class="row2"><button id="open" type="button"></button><button id="trash" type="button" aria-label="Esvaziar pedido" title="Esvaziar pedido"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button></div></div>
 <div id="sheet" role="dialog" aria-modal="true" aria-label="Seu pedido"><div class="panel" id="panel">
 <div id="v1">
 <h2>Seu pedido</h2><div id="lines"></div><div class="tot"><span>Subtotal</span><span id="tot"></span></div>
 <div class="lb">Como vai receber?</div>
-<div class="opts"><label class="opt"><input type="radio" name="tp" value="entrega" checked><span>🚚 Entrega</span></label><label class="opt"><input type="radio" name="tp" value="retirada"><span>🏪 Retirada</span></label></div>
+<div class="opts"><label class="opt" id="opt-e"><input type="radio" name="tp" value="entrega" checked><span>🚚 Entrega</span></label><label class="opt"><input type="radio" name="tp" value="retirada"><span>🏪 Retirada</span></label></div>
 <label for="nm">Nome</label><input type="text" id="nm" autocomplete="name">
 <label for="ph">Telefone (com DDD)</label><input type="tel" id="ph" inputmode="tel" autocomplete="tel" placeholder="(65) 90000-0000">
 <div id="addr">
@@ -119,35 +133,36 @@ input[type=text],input[type=tel],textarea{width:100%;background:var(--bg);color:
 </div></div>
 <script>
 const PHONE="5565981336068"; // WhatsApp da loja
+const ENTREGA=false; // troque para true para reativar a opção de entrega
 const M=[
 {c:"Espetos Completos",n:"Completos",s:"Acompanha arroz, vinagrete, farofa de banana e mandioca",i:[
- ["Espeto Completo (Carne, Linguiça, Kafta)","Carne • Linguiça • Kafta",20,1],
- ["Espeto Completo (Frango, Tulipa, Pão de Alho)","Medalhão de Frango • Tulipa • Pão de Alho",22]
+ ["Espeto Completo (Carne, Linguiça, Kafta)","Carne • Linguiça • Kafta",19.99,1],
+ ["Espeto Completo (Frango, Tulipa, Pão de Alho)","Medalhão de Frango • Tulipa • Pão de Alho",21.99]
 ]},
 {c:"Espetos Simples",n:"Simples",s:"Só o espeto, na brasa",i:[
- ["Carne","Espeto simples",10],
- ["Linguiça","Espeto simples",10],
- ["Kafta","Espeto simples",10],
- ["Medalhão","Espeto simples",12],
- ["Tulipa","Espeto simples",12],
- ["Pão de Alho","Espeto simples",12]
+ ["Carne","Espeto simples",9.99],
+ ["Linguiça","Espeto simples",9.99],
+ ["Kafta","Espeto simples",9.99],
+ ["Medalhão","Espeto simples",11.99],
+ ["Tulipa","Espeto simples",11.99],
+ ["Pão de Alho","Espeto simples",11.99]
 ]},
 {c:"Bebidas",n:"Bebidas",s:"Bem geladas",i:[
- ["Água sem gás","",5],
- ["Água com gás","",6],
- ["Sukita lata","",6],
- ["Coca lata","310 ml",6],
- ["Fanta lata","310 ml",6],
- ["Skol lata","269 ml",6],
- ["Império Ultra lata","269 ml",6],
- ["Heineken lata","",7],
- ["Cerveja Original","265 ml",6],
- ["Heineken","210 ml",9],
- ["Guaraná Antarctica","1 litro",11],
- ["Coca-Cola","1 litro",12],
- ["Fanta","1 litro",12],
- ["Suco Del Valle","1 litro",15],
- ["Suco Del Valle lata","290 ml",10]
+ ["Água sem gás","",4.99],
+ ["Água com gás","",5.99],
+ ["Sukita lata","",5.99],
+ ["Coca lata","310 ml",5.99],
+ ["Fanta lata","310 ml",5.99],
+ ["Skol lata","269 ml",5.99],
+ ["Império Ultra lata","269 ml",5.99],
+ ["Heineken lata","",6.99],
+ ["Cerveja Original","265 ml",5.99],
+ ["Heineken","210 ml",8.99],
+ ["Guaraná Antarctica","1 litro",10.99],
+ ["Coca-Cola","1 litro",11.99],
+ ["Fanta","1 litro",11.99],
+ ["Suco Del Valle","1 litro",14.99],
+ ["Suco Del Valle lata","290 ml",9.99]
 ]}];
 const Q={},$=i=>document.getElementById(i);
 const R=v=>"R$ "+v.toFixed(2).replace(".",",");
@@ -170,7 +185,7 @@ function draw(){
  $("menu").innerHTML=h;if(!$("tabs").children.length)$("tabs").innerHTML=t;spy();
 }
 function lines(){const f=[];let tot=0,c=0;
- Object.keys(Q).forEach(k=>{if(Q[k]>0){const s=k.split("-"),p=M[s[0]].i[s[1]];f.push({k,a:+s[0],b:+s[1],n:p[0],q:Q[k],u:p[2],v:p[2]*Q[k]});tot+=p[2]*Q[k];c+=Q[k]}});
+ Object.keys(Q).forEach(k=>{if(Q[k]>0){const s=k.split("-"),p=M[s[0]].i[s[1]];const v=Math.round(p[2]*Q[k]*100)/100;f.push({k,a:+s[0],b:+s[1],n:p[0],q:Q[k],u:p[2],v});tot=Math.round((tot+v)*100)/100;c+=Q[k]}});
  f.sort((x,y)=>x.a-y.a||x.b-y.b);return{f,tot,c}}
 function bar(){const L=lines();$("bar").style.display=L.c?"block":"none";
  $("open").textContent="🛒 "+L.c+(L.c==1?" item":" itens")+" • "+R(L.tot)+" • VER PEDIDO"}
@@ -227,6 +242,10 @@ $("send").onclick=()=>{if(!lines().c)return;window.open("https://wa.me/"+PHONE+"
 function spy(){if(!("IntersectionObserver" in window))return;
  if(!io)io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){const t=$("tabs");document.querySelectorAll("#tabs a").forEach(a=>{const was=a.classList.contains("on"),on=a.dataset.s===en.target.id;a.classList.toggle("on",on);if(on&&!was)t.scrollLeft=a.offsetLeft-(t.clientWidth-a.offsetWidth)/2})}})},{rootMargin:"-30% 0px -60% 0px"});
  io.disconnect();document.querySelectorAll("section").forEach(s=>io.observe(s))}
+if(!ENTREGA){ // entrega oculta (o código continua aqui)
+ $("opt-e").hidden=true;$("opt-e").parentNode.style.gridTemplateColumns="1fr";
+ document.querySelector("input[name=tp][value=retirada]").checked=true;
+ $("info-e").innerHTML="<b>Retirada no local</b>";$("taxa").hidden=true}
 draw();bar();
 </script>
 </body>
