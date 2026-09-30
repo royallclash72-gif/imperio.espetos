@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
@@ -210,7 +210,7 @@ input[type=text],input[type=tel],textarea{width:100%;
   font:inherit;min-height:48px;transition:border-color .2s ease,box-shadow .2s ease}
 input[type=text]:focus,input[type=tel]:focus,textarea:focus{
   border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-glow);outline:none}
-.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
 .opt{position:relative;display:block;margin:0}
 .opt input{position:absolute;opacity:0;inset:0}
 .opt span{display:block;padding:13px 10px;border:1px solid var(--line2);border-radius:14px;
@@ -239,9 +239,21 @@ input[type=text]:focus,input[type=tel]:focus,textarea:focus{
   color:var(--mute);text-decoration:underline;font-weight:500;transition:color .2s ease}
 .ghost:hover{color:var(--ink)}
 
+/* ── MODAL DE SABORES ── */
+.modal{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.75);
+  display:none;align-items:flex-end;justify-content:center;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.modal.open{display:flex}
+.flavor-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.flavor-label{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border:1px solid var(--line2);border-radius:14px;background:var(--bg);color:var(--ink);cursor:pointer;transition:all .2s ease;font-weight:500;font-size:1rem;user-select:none}
+.flavor-label:hover{border-color:var(--gold);background:rgba(212,164,74,.06)}
+.flavor-label.active{border-color:var(--gold);background:linear-gradient(135deg,rgba(212,164,74,.18),rgba(192,57,43,.12));box-shadow:0 2px 14px var(--gold-glow);font-weight:700;color:var(--gold)}
+.flavor-label .f-radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--line2);display:flex;align-items:center;justify-content:center;transition:all .2s ease;flex:none}
+.flavor-label.active .f-radio{border-color:var(--gold);background:var(--gold)}
+.flavor-label.active .f-radio::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--charcoal)}
+
 /* ── responsive ── */
 @media (min-width:760px){
-  #sheet{align-items:center}
+  #sheet,.modal{align-items:center}
   .panel{border-radius:24px;border:2px solid var(--gold);max-height:90%}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.crown,.crown circle{animation:none}.embers span{animation:none}}
@@ -268,7 +280,7 @@ input[type=text]:focus,input[type=tel]:focus,textarea:focus{
 <p class="slogan">Sabor que reúne.</p>
 <div class="embers"><span>🔥</span><span>🔥</span><span>🔥</span><span>🔥</span><span>🔥</span></div>
 <p class="tag">Monte seu pedido e mande pelo WhatsApp.</p>
-<div class="info"><span><b>Aberto:</b> de terça a domingo, das 17h às 23h30</span><span id="info-e"><b>Entrega e retirada</b></span></div>
+<div class="info"><span><b>Aberto:</b> De segunda a sábado, das 17h às 22h.</span><span id="info-e"><b>Consumo no local e retirada</b></span></div>
 </div></header>
 <nav aria-label="Categorias"><div class="wrap" id="tabs"></div></nav>
 <main class="wrap" id="menu"></main>
@@ -277,11 +289,19 @@ input[type=text]:focus,input[type=tel]:focus,textarea:focus{
 <div id="sheet" role="dialog" aria-modal="true" aria-label="Seu pedido"><div class="panel" id="panel">
 <div id="v1">
 <h2>Seu pedido</h2><div id="lines"></div><div class="tot"><span>Subtotal</span><span id="tot"></span></div>
-<div class="lb">Como vai receber?</div>
-<div class="opts"><label class="opt" id="opt-e"><input type="radio" name="tp" value="entrega" checked><span>🚚 Entrega</span></label><label class="opt"><input type="radio" name="tp" value="retirada"><span>🏪 Retirada</span></label></div>
+<div class="lb">Como vai saborear?</div>
+<div class="opts">
+  <label class="opt" id="opt-l"><input type="radio" name="tp" value="local" checked><span>🍽️ Consumo no local</span></label>
+  <label class="opt" id="opt-r"><input type="radio" name="tp" value="retirada"><span>🥡 Retirada</span></label>
+  <label class="opt" id="opt-e"><input type="radio" name="tp" value="entrega"><span>🚚 Entrega</span></label>
+</div>
+<div id="mesa-box">
+  <label for="ms">Número da mesa</label>
+  <input type="text" id="ms" placeholder="Ex.: 05, Mesa 12" inputmode="numeric">
+</div>
 <label for="nm">Nome</label><input type="text" id="nm" autocomplete="name">
 <label for="ph">Telefone (com DDD)</label><input type="tel" id="ph" inputmode="tel" autocomplete="tel" placeholder="(65) 90000-0000">
-<div id="addr">
+<div id="addr" hidden>
 <label for="ru">Endereço (rua)</label><input type="text" id="ru" autocomplete="street-address">
 <div class="two"><div><label for="nu">Número</label><input type="text" id="nu" inputmode="numeric"></div><div><label for="co">Complemento</label><input type="text" id="co"></div></div>
 <label for="ba">Bairro</label><input type="text" id="ba">
@@ -301,13 +321,34 @@ input[type=text]:focus,input[type=tel]:focus,textarea:focus{
 <button class="ghost" id="back" type="button">Voltar e editar</button>
 </div>
 </div></div>
+
+<!-- Modal de Seleção de Sabores -->
+<div id="modal-flavor" class="modal" role="dialog" aria-modal="true" aria-label="Escolha a carne">
+  <div class="panel" style="max-width:480px">
+    <h2 id="mf-title">Espeto Completo</h2>
+    <p id="mf-desc" class="sub" style="margin:4px 0 16px"></p>
+    <div class="lb">Escolha a carne / sabor:</div>
+    <div id="mf-opts" class="flavor-list"></div>
+    <div class="lb" style="margin-top:16px">Quantidade:</div>
+    <div style="display:flex;align-items:center;gap:14px;margin:8px 0 16px">
+      <div class="ctl" style="background:var(--bg);border:1px solid var(--line2);border-radius:12px;padding:4px">
+        <button class="q" id="mf-dec" type="button" aria-label="Diminuir">−</button>
+        <span class="n" id="mf-qty" style="min-width:36px;font-size:1.1rem;font-weight:700">1</span>
+        <button class="q" id="mf-inc" type="button" aria-label="Aumentar">+</button>
+      </div>
+      <span id="mf-subtot" style="font-weight:700;color:var(--gold);font-family:var(--serif);font-size:1.15rem"></span>
+    </div>
+    <button class="next" id="mf-confirm" type="button">Adicionar ao pedido</button>
+    <button class="ghost" id="mf-cancel" type="button">Cancelar</button>
+  </div>
+</div>
 <script>
 const PHONE="5565981336068";
 const ENTREGA=false;
 const M=[
-{c:"Espetos Completos",n:"Completos",s:"Acompanha arroz, vinagrete, farofa de banana e mandioca",i:[
- ["Espeto Completo (Carne, Linguiça, Kafta)","Carne • Linguiça • Kafta",19.99,1],
- ["Espeto Completo (Frango, Tulipa, Pão de Alho)","Medalhão de Frango • Tulipa • Pão de Alho",21.99]
+{c:"Espetos Completos",n:"Completos",b:1,s:"Acompanha arroz, vinagrete, farofa de banana e mandioca",i:[
+ {n:"Espeto Completo (Tradicionais)",d:"Carne • Linguiça • Kafta",p:19.99,opts:["Carne","Linguiça","Kafta"]},
+ {n:"Espeto Completo (Especiais)",d:"Medalhão de Frango • Tulipa • Pão de Alho",p:21.99,opts:["Medalhão de Frango","Tulipa","Pão de Alho"]}
 ]},
 {c:"Espetos Simples",n:"Simples",s:"Só o espeto, na brasa",i:[
  ["Carne","Espeto simples",9.99],
@@ -325,7 +366,6 @@ const M=[
  ["Fanta lata","310 ml",5.99],
  ["Skol lata","269 ml",5.99],
  ["Império Ultra lata","269 ml",5.99],
-
  ["Heineken lata","",6.99],
  ["Cerveja Original","265 ml",5.99],
  ["Heineken","210 ml",8.99],
@@ -342,22 +382,93 @@ const val=i=>$(i).value.trim();
 const radio=n=>{const r=document.querySelector("input[name="+n+"]:checked");return r?r.value:""};
 const money=s=>{s=s.replace(/[^\d,.]/g,"");if(s.includes(","))s=s.replace(/\./g,"").replace(",",".");return parseFloat(s)};
 let io=null;
+let curModalA=null,curModalB=null,curModalOpt=0,curModalQty=1;
+
 function draw(){
  let h="",t="";
  M.forEach((g,a)=>{
   t+=`<a href="#s${a}" data-s="s${a}">${g.n}</a>`;
-  h+=`<section id="s${a}"><h2>${g.c}</h2><p class="sub">${g.s}</p>`;
-  g.i.forEach((p,b)=>{const k=a+"-"+b,n=Q[k]||0;
-   h+=`<div class="item"><div class="txt"><h3>${esc(p[0])}${p[3]?'<span class="best">🔥 Mais pedido</span>':''}</h3>${p[1]?`<p>${esc(p[1])}</p>`:''}</div><div class="side"><span class="price">${R(p[2])}</span><div class="ctl">`+
-   (n?`<button class="q" data-k="${k}" data-d="-1" aria-label="Tirar ${esc(p[0])}">−</button><span class="n" aria-live="polite">${n}</span><button class="q" data-k="${k}" data-d="1" aria-label="Adicionar mais ${esc(p[0])}">+</button>`:`<button class="add" data-k="${k}" data-d="1">Adicionar</button>`)+`</div></div></div>`;
+  h+=`<section id="s${a}"><h2>${esc(g.c)}${g.b?'<span class="best">🔥 Mais pedidos</span>':''}</h2><p class="sub">${g.s}</p>`;
+  g.i.forEach((p,b)=>{
+   if(p.sub){h+=`<div class="subhead">${esc(p.sub)}</div>`;return}
+   if(Array.isArray(p)){
+    const k=a+"-"+b,n=Q[k]||0;
+    h+=`<div class="item"><div class="txt"><h3>${esc(p[0])}${p[3]?'<span class="best">🔥 Mais pedido</span>':''}</h3>${p[1]?`<p>${esc(p[1])}</p>`:''}</div><div class="side"><span class="price">${R(p[2])}</span><div class="ctl">`+
+    (n?`<button class="q" data-k="${k}" data-d="-1" aria-label="Tirar ${esc(p[0])}">−</button><span class="n" aria-live="polite">${n}</span><button class="q" data-k="${k}" data-d="1" aria-label="Adicionar mais ${esc(p[0])}">+</button>`:`<button class="add" data-k="${k}" data-d="1">Adicionar</button>`)+`</div></div></div>`;
+   }else{
+    let totalCount=0;
+    if(p.opts)p.opts.forEach((_,idx)=>{totalCount+=(Q[a+"-"+b+"-"+idx]||0)});
+    h+=`<div class="item"><div class="txt"><h3>${esc(p.n)}${p.b?'<span class="best">🔥 Mais pedido</span>':''}</h3>${p.d?`<p>${esc(p.d)}</p>`:''}</div><div class="side"><span class="price">${R(p.p)}</span><div class="ctl">`+
+    `<button class="add" type="button" onclick="openFlavorModal(${a},${b})">${totalCount?'+ Adicionar ('+totalCount+')':'Escolher sabor'}</button>`+
+    `</div></div></div>`;
+   }
   });
   h+='</section>';
  });
  $("menu").innerHTML=h;if(!$("tabs").children.length)$("tabs").innerHTML=t;spy();
 }
-function lines(){const f=[];let tot=0,c=0;
- Object.keys(Q).forEach(k=>{if(Q[k]>0){const s=k.split("-"),p=M[s[0]].i[s[1]];const v=Math.round(p[2]*Q[k]*100)/100;f.push({k,a:+s[0],b:+s[1],n:p[0],q:Q[k],u:p[2],v});tot=Math.round((tot+v)*100)/100;c+=Q[k]}});
- f.sort((x,y)=>x.a-y.a||x.b-y.b);return{f,tot,c}}
+
+function openFlavorModal(a,b){
+ curModalA=a;curModalB=b;curModalOpt=0;curModalQty=1;
+ const item=M[a].i[b];
+ $("mf-title").textContent=item.n;
+ $("mf-desc").textContent=item.d||(M[a].s||"");
+ let optsHtml="";
+ item.opts.forEach((opt,idx)=>{
+  optsHtml+=`<div class="flavor-label ${idx===0?'active':''}" onclick="selectModalOpt(${idx})">`+
+   `<span>🍢 ${esc(opt)}</span><span class="f-radio"></span></div>`;
+ });
+ $("mf-opts").innerHTML=optsHtml;
+ updateModalState();
+ $("modal-flavor").classList.add("open");
+ document.body.style.overflow="hidden";
+}
+
+function selectModalOpt(idx){
+ curModalOpt=idx;
+ document.querySelectorAll("#mf-opts .flavor-label").forEach((el,i)=>{
+  el.classList.toggle("active",i===idx);
+ });
+}
+
+function updateModalState(){
+ const item=M[curModalA].i[curModalB];
+ $("mf-qty").textContent=curModalQty;
+ $("mf-subtot").textContent=R(item.p*curModalQty);
+}
+
+function closeFlavorModal(){
+ $("modal-flavor").classList.remove("open");
+ if(!isOpen())document.body.style.overflow="";
+}
+
+function lines(){
+ const f=[];let tot=0,c=0;
+ Object.keys(Q).forEach(k=>{
+  if(Q[k]>0){
+   const s=k.split("-"),a=+s[0],b=+s[1],optIdx=s.length>2?+s[2]:null;
+   const g=M[a],p=g&&g.i[b];
+   if(!p)return;
+   let name,price;
+   if(Array.isArray(p)){
+    name=p[0];price=p[2];
+   }else{
+    price=p.p;
+    if(optIdx!==null&&p.opts&&p.opts[optIdx]){
+     name="Espeto Completo de "+p.opts[optIdx];
+    }else{
+     name=p.n;
+    }
+   }
+   const v=Math.round(price*Q[k]*100)/100;
+   f.push({k,a,b,optIdx,n:name,q:Q[k],u:price,v});
+   tot=Math.round((tot+v)*100)/100;
+   c+=Q[k];
+  }
+ });
+ f.sort((x,y)=>x.a-y.a||x.b-y.b||((x.optIdx||0)-(y.optIdx||0)));
+ return{f,tot,c};
+}
 function bar(){const L=lines();$("bar").style.display=L.c?"block":"none";
  $("open").textContent="🛒 "+L.c+(L.c==1?" item":" itens")+" • "+R(L.tot)+" • VER PEDIDO"}
 function isOpen(){return $("sheet").classList.contains("open")}
@@ -369,34 +480,43 @@ function cart(){const L=lines();
 function view(n){$("v1").hidden=n!=1;$("v2").hidden=n!=2;$("panel").scrollTop=0}
 function openSheet(){if(!lines().c)return;cart();sync();$("err").textContent="";view(1);$("sheet").classList.add("open");document.body.style.overflow="hidden"}
 function closeSheet(){$("sheet").classList.remove("open");document.body.style.overflow=""}
-function sync(){$("addr").hidden=radio("tp")!=="entrega";$("tr").hidden=radio("pg")!=="Dinheiro"}
+function sync(){
+ const tp=radio("tp");
+ $("mesa-box").hidden=(tp!=="local");
+ $("addr").hidden=(tp!=="entrega");
+ $("tr").hidden=(radio("pg")!=="Dinheiro");
+}
 function fail(m,id){$("err").textContent=m;if(id)$(id).focus();return false}
 function validate(){const L=lines();
  if(!L.c)return fail("Seu pedido está vazio.");
+ const tp=radio("tp");
+ if(tp==="local"&&!val("ms"))return fail("Informe o número da sua mesa.","ms");
  if(!val("nm"))return fail("Informe seu nome.","nm");
  if(val("ph").replace(/\D/g,"").length<10)return fail("Informe um telefone com DDD.","ph");
- if(radio("tp")==="entrega"){for(const[i,t]of[["ru","o endereço"],["nu","o número"],["ba","o bairro"]])if(!val(i))return fail("Informe "+t+".",i)}
+ if(tp==="entrega"){for(const[i,t]of[["ru","o endereço"],["nu","o número"],["ba","o bairro"]])if(!val(i))return fail("Informe "+t+".",i)}
  if(!radio("pg"))return fail("Escolha a forma de pagamento.");
  if(radio("pg")==="Dinheiro"&&val("tc")&&!(money(val("tc"))>=L.tot))return fail("O valor do troco deve ser igual ou maior que o total ("+R(L.tot)+").","tc");
  $("err").textContent="";return true}
 function trocoVal(){return radio("pg")==="Dinheiro"&&val("tc")?money(val("tc")):0}
-function review(){const L=lines(),en=radio("tp")==="entrega",pg=radio("pg"),tc=trocoVal();
+function tipoLabel(){const tp=radio("tp");return tp==="local"?"🍽️ Consumo no local":tp==="entrega"?"🚚 Entrega":"🥡 Retirada"}
+function review(){const L=lines(),tp=radio("tp"),en=tp==="entrega",pg=radio("pg"),tc=trocoVal();
  const kv=(k,v)=>v?`<div class="kv"><b>${k}</b><span>${esc(v)}</span></div>`:"";
  $("rv").innerHTML=`<div class="blk">Produtos</div>`+L.f.map(x=>`<div class="row"><span>${x.q}× ${esc(x.n)}<small>${R(x.u)} cada</small></span><span>${R(x.v)}</span></div>`).join("")+
  `<div class="row"><span>Subtotal</span><span>${R(L.tot)}</span></div>`+(en?`<div class="row"><span>Taxa de entrega</span><span>a combinar</span></div>`:"")+
- `<div class="tot"><span>Total</span><span>${R(L.tot)}</span></div><div class="blk">${en?"🚚 Entrega":"🏪 Retirada no local"}</div>`+
- kv("Nome",val("nm"))+kv("Telefone",val("ph"))+(en?kv("Endereço",val("ru")+", "+val("nu"))+kv("Complemento",val("co"))+kv("Bairro",val("ba"))+kv("Referência",val("rf")):"")+
+ `<div class="tot"><span>Total</span><span>${R(L.tot)}</span></div><div class="blk">${tipoLabel()}</div>`+
+ kv("Nome",val("nm"))+kv("Telefone",val("ph"))+(tp==="local"?kv("Mesa",val("ms")):"")+(en?kv("Endereço",val("ru")+", "+val("nu"))+kv("Complemento",val("co"))+kv("Bairro",val("ba"))+kv("Referência",val("rf")):"")+
  `<div class="blk">Pagamento</div>`+kv("Forma",pg)+(tc?kv("Troco para",R(tc)+" (troco de "+R(tc-L.tot)+")"):"")+
  (val("ob")?`<div class="blk">Observações</div><p class="obs">${esc(val("ob"))}</p>`:"")}
-function message(){const L=lines(),en=radio("tp")==="entrega",tc=trocoVal();
+function message(){const L=lines(),tp=radio("tp"),en=tp==="entrega",tc=trocoVal();
  let m="🍢 *NOVO PEDIDO — IMPÉRIO DOS ESPETOS*\n\n👤 Cliente: "+val("nm")+"\n📱 Telefone: "+val("ph")+
- "\n\n📦 *PEDIDO:*\n"+L.f.map(x=>x.q+"x "+x.n+" — "+R(x.v)).join("\n")+
+ "\n\n🧾 *PEDIDO:*\n"+L.f.map(x=>x.q+"x "+x.n+" — "+R(x.v)).join("\n")+
  "\n\n💰 *TOTAL: "+R(L.tot)+"*"+(en?" (+ taxa de entrega a combinar)":"")+"\n\n";
- if(en){m+="🚚 Entrega\n📍 Endereço: "+val("ru")+", "+val("nu");
+ if(tp==="local"){m+="🍽️ Consumo no local\n🪑 Mesa: "+val("ms")}
+ else if(en){m+="🚚 Entrega\n📍 Endereço: "+val("ru")+", "+val("nu");
   if(val("co"))m+="\n🏠 Complemento: "+val("co");
-  m+="\n📌 Bairro: "+val("ba");
-  if(val("rf"))m+="\n📍 Referência: "+val("rf")}
- else m+="🏪 Retirada no local";
+  m+="\n🏘️ Bairro: "+val("ba");
+  if(val("rf"))m+="\n📌 Referência: "+val("rf")}
+ else m+="🥡 Retirada";
  m+="\n\n💳 Pagamento: "+radio("pg");
  if(tc)m+="\n💵 Troco para: "+R(tc)+" (troco de "+R(tc-L.tot)+")";
  if(val("ob"))m+="\n\n📝 Observações:\n"+val("ob");
@@ -406,7 +526,23 @@ document.addEventListener("change",e=>{if(e.target.name==="tp"||e.target.name===
 $("open").onclick=openSheet;$("close").onclick=closeSheet;
 $("trash").onclick=()=>{if(!lines().c)return;Object.keys(Q).forEach(k=>delete Q[k]);draw();bar();closeSheet()};
 $("sheet").onclick=function(e){if(e.target===this)closeSheet()};
-document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
+$("mf-inc").onclick=()=>{curModalQty++;updateModalState()};
+$("mf-dec").onclick=()=>{if(curModalQty>1){curModalQty--;updateModalState()}};
+$("mf-confirm").onclick=()=>{
+ const k=curModalA+"-"+curModalB+"-"+curModalOpt;
+ Q[k]=(Q[k]||0)+curModalQty;
+ closeFlavorModal();
+ draw();
+ bar();
+};
+$("mf-cancel").onclick=closeFlavorModal;
+$("modal-flavor").onclick=function(e){if(e.target===this)closeFlavorModal()};
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape"){
+  if($("modal-flavor").classList.contains("open"))closeFlavorModal();
+  else closeSheet();
+ }
+});
 $("go").onclick=()=>{if(validate()){review();view(2)}};
 $("back").onclick=()=>view(1);
 $("send").onclick=()=>{if(!lines().c)return;window.open("https://wa.me/"+PHONE+"?text="+encodeURIComponent(message()),"_blank")};
@@ -414,9 +550,9 @@ function spy(){if(!("IntersectionObserver" in window))return;
  if(!io)io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){const t=$("tabs");document.querySelectorAll("#tabs a").forEach(a=>{const was=a.classList.contains("on"),on=a.dataset.s===en.target.id;a.classList.toggle("on",on);if(on&&!was)t.scrollLeft=a.offsetLeft-(t.clientWidth-a.offsetWidth)/2})}})},{rootMargin:"-30% 0px -60% 0px"});
  io.disconnect();document.querySelectorAll("section").forEach(s=>io.observe(s))}
 if(!ENTREGA){
- $("opt-e").hidden=true;$("opt-e").parentNode.style.gridTemplateColumns="1fr";
- document.querySelector("input[name=tp][value=retirada]").checked=true;
- $("info-e").innerHTML="<b>Retirada no local</b>";$("taxa").hidden=true}
+ $("opt-e").hidden=true;
+ document.querySelector("input[name=tp][value=local]").checked=true;
+ $("info-e").innerHTML="<b>Consumo no local e retirada</b>";$("taxa").hidden=true}
 draw();bar();
 </script>
 </body>
